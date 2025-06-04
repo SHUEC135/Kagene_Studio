@@ -6,19 +6,37 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct ContentView: View {
+    @State private var audioPlayer: AVAudioPlayer?
+    @State private var isPlaying = false
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Button(isPlaying ? "Pause" : "Play") {
+                if let player = audioPlayer {
+                    if player.isPlaying {
+                        player.pause()
+                        isPlaying = false
+                    } else {
+                        player.play()
+                        isPlaying = true
+                    }
+                }
+            }
         }
-        .padding()
+        .onAppear {
+            if let url = Bundle.main.url(forResource: "sample", withExtension: "mp3") {
+                do {
+                    audioPlayer = try AVAudioPlayer(contentsOf: url)
+                    audioPlayer?.prepareToPlay()
+                } catch {
+                    print("Error loading audio: \(error)")
+                }
+            }
+        }
     }
 }
 
-#Preview {
-    ContentView()
-}
+
