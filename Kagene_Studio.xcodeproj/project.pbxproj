@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		4C71C8582DEFF6EE00343873 /* Kagene_Studio */ = {
+		4C71C8982DF1811600343873 /* Kagene_Studio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Kagene_Studio;
 			sourceTree = "<group>";
@@ -32,7 +32,7 @@
 		4C71C84D2DEFF6EE00343873 = {
 			isa = PBXGroup;
 			children = (
-				4C71C8582DEFF6EE00343873 /* Kagene_Studio */,
+				4C71C8982DF1811600343873 /* Kagene_Studio */,
 				4C71C8572DEFF6EE00343873 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				4C71C8582DEFF6EE00343873 /* Kagene_Studio */,
+				4C71C8982DF1811600343873 /* Kagene_Studio */,
 			);
 			name = Kagene_Studio;
 			packageProductDependencies = (
