@@ -11,7 +11,7 @@ import SwiftUI
 struct Kagene_StudioApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AudioPlayerView()
         }
     }
 }
