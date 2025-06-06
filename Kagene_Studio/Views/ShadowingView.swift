@@ -10,6 +10,7 @@ import SwiftUI
 struct ShadowingView: View {
     var body: some View {
         AudioPlayerView()
+        RecordingView()
     }
 }
 
