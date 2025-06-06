@@ -9,17 +9,23 @@ import SwiftUI
 
 struct AudioFilePickerView: View {
     @State private var showPicker = false
+    @State private var savedFileURL: URL?
 
     var body: some View {
-        Button("Import Audio") {
-            showPicker = true
+        VStack {
+            Button("Import Audio") {
+                showPicker = true
+            }
+
+            if let savedFileURL = savedFileURL {
+                Text("Saved to: \(savedFileURL.lastPathComponent)")
+                    .font(.caption)
+            }
         }
         .sheet(isPresented: $showPicker) {
-            DocumentPicker()
+            DocumentPicker { savedURL in
+                self.savedFileURL = savedURL
+            }
         }
     }
-}
-
-#Preview {
-    AudioFilePickerView()
 }
