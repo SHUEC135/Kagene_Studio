@@ -43,21 +43,27 @@ struct DocumentPicker: UIViewControllerRepresentable {
                 textField.placeholder = "プロジェクト名"
             }
 
-            let saveAction = UIAlertAction(title: "保存", style: .default) { _ in
+            let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
                 guard let projectName = alert.textFields?.first?.text, !projectName.isEmpty else { return }
 
-                // Create directory inside app's Documents folder
+                // Get Documents directory
                 let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                 let projectFolder = documents.appendingPathComponent(projectName, isDirectory: true)
+                let editedFolder = projectFolder.appendingPathComponent("Edited", isDirectory: true)
 
                 do {
+                    // Create main project folder
                     try FileManager.default.createDirectory(at: projectFolder, withIntermediateDirectories: true)
 
-                    // Copy selected file into the project folder
+                    // Create subfolder for edited audio
+                    try FileManager.default.createDirectory(at: editedFolder, withIntermediateDirectories: true)
+
+                    // Copy original file into project folder (not in Edited)
                     let destination = projectFolder.appendingPathComponent(selectedURL.lastPathComponent)
                     try FileManager.default.copyItem(at: selectedURL, to: destination)
 
-                    print("Saved file to:", destination)
+                    print("✅ Original file saved to: \(destination)")
+                    print("📁 Edited folder created at: \(editedFolder)")
 
                     // Send the final saved URL back to SwiftUI if needed
                     self.onFileSaved(destination)
@@ -66,7 +72,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
                     print("❌ Error saving file: \(error.localizedDescription)")
                 }
             }
-
+            
             alert.addAction(saveAction)
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 
