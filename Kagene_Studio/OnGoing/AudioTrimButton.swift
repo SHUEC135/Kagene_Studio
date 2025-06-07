@@ -8,19 +8,15 @@
 import SwiftUI
 
 struct AudioTrimButton: View {
-    @State private var showStartTime = false
+    @State private var showModal = false
 
     var body: some View {
         Button("Start Trimming") {
-            showStartTime = true
+            showModal = true
         }
-        .sheet(isPresented: $showStartTime) {
-            StartTimeView()
+        .sheet(isPresented: $showModal) {
+            AudioTrimFlowView()
         }
         .padding()
     }
-}
-
-#Preview {
-    AudioTrimButton()
 }
