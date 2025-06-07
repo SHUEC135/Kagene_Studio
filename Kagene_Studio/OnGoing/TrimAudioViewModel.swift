@@ -10,6 +10,7 @@ import AVFoundation
 import SwiftUI
 
 class TrimAudioViewModel: ObservableObject {
+    @Published var firstThreeWords: String = ""
     @Published var startTimeMs: String = ""
     @Published var endTimeMs: String = ""
     @Published var statusMessage: String = ""
@@ -38,7 +39,7 @@ class TrimAudioViewModel: ObservableObject {
             return
         }
 
-        let asset = AVAsset(url: audioURL)
+        let asset = AVURLAsset(url: audioURL)
         let audioDuration = CMTimeGetSeconds(asset.duration) * 1000.0
 
         guard endMs <= audioDuration else {
@@ -49,17 +50,15 @@ class TrimAudioViewModel: ObservableObject {
         let startTime = CMTime(milliseconds: startMs)
         let endTime = CMTime(milliseconds: endMs)
 
-        AudioTrimmer.trimAudio(
-            sourceURL: audioURL,
-            startTime: startTime,
-            endTime: endTime
-        ) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let outputURL):
-                    self.statusMessage = "Trimmed and saved to:\n\(outputURL.lastPathComponent)"
-                case .failure(let error):
-                    self.statusMessage = "Error: \(error.localizedDescription)"
+        Task {
+            do {
+                let output = try await AudioTrimmer.trimAudio(sourceURL: audioURL, startTime: startTime, endTime: endTime)
+                await MainActor.run {
+                    self.statusMessage = "Saved: \(output.lastPathComponent)"
+                }
+            } catch {
+                await MainActor.run {
+                    self.statusMessage = "Failed: \(error.localizedDescription)"
                 }
             }
         }

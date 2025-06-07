@@ -40,7 +40,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
             // Ask for project name using an alert
             let alert = UIAlertController(title: "プロジェクト名を入力", message: nil, preferredStyle: .alert)
             alert.addTextField { textField in
-                textField.placeholder = "Project name"
+                textField.placeholder = "プロジェクト名"
             }
 
             let saveAction = UIAlertAction(title: "保存", style: .default) { _ in

@@ -7,15 +7,28 @@
 
 import SwiftUI
 
-struct AudioFilePickerView: View {
+struct NewProjectButtonView: View {
     @State private var showPicker = false
     @State private var savedFileURL: URL?
 
     var body: some View {
         VStack {
-            Button("Import Audio") {
+            Button(action: {
                 showPicker = true
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 16, weight: .medium))
+                    Text("新しいプロジェクトを追加")
+                        .font(.system(size: 16))
+                }
+                .foregroundColor(.white)
+                .padding()
+                .frame(maxWidth: .infinity)
             }
+            .background(Color.blue)
+            .clipShape(Capsule())
+            .padding(.horizontal)
 
             if let savedFileURL = savedFileURL {
                 Text("Saved to: \(savedFileURL.lastPathComponent)")
