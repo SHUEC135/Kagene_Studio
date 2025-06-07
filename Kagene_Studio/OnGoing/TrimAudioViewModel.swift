@@ -52,7 +52,12 @@ class TrimAudioViewModel: ObservableObject {
 
         Task {
             do {
-                let output = try await AudioTrimmer.trimAudio(sourceURL: audioURL, startTime: startTime, endTime: endTime)
+                let output = try await AudioTrimmer.trimAudio(
+                    sourceURL: audioURL,
+                    startTime: startTime,
+                    endTime: endTime,
+                    fileName: self.firstThreeWords
+                )
                 await MainActor.run {
                     self.statusMessage = "Saved: \(output.lastPathComponent)"
                 }
