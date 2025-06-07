@@ -12,6 +12,7 @@ struct Kagene_StudioApp: App {
     var body: some Scene {
         WindowGroup {
             ProjectView()
+            AudioTrimButton()
         }
     }
 }

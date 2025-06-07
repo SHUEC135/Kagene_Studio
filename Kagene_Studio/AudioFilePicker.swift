@@ -38,12 +38,12 @@ struct DocumentPicker: UIViewControllerRepresentable {
             guard let selectedURL = urls.first else { return }
 
             // Ask for project name using an alert
-            let alert = UIAlertController(title: "Enter Project Name", message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: "プロジェクト名を入力", message: nil, preferredStyle: .alert)
             alert.addTextField { textField in
                 textField.placeholder = "Project name"
             }
 
-            let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
+            let saveAction = UIAlertAction(title: "保存", style: .default) { _ in
                 guard let projectName = alert.textFields?.first?.text, !projectName.isEmpty else { return }
 
                 // Create directory inside app's Documents folder
