@@ -10,6 +10,8 @@ import SwiftUI
 struct NewProjectButtonView: View {
     @State private var showPicker = false
     @State private var savedFileURL: URL?
+    
+    @ObservedObject var viewModel: ProjectListViewModel
 
     var body: some View {
         VStack {
@@ -39,6 +41,7 @@ struct NewProjectButtonView: View {
             DocumentPicker { savedURL in
                 self.savedFileURL = savedURL
             }
+            .environmentObject(viewModel)
         }
     }
 }

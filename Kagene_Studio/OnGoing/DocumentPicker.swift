@@ -12,10 +12,12 @@ import SwiftUI
 
 struct DocumentPicker: UIViewControllerRepresentable {
     // This callback will send the picked file URL and project name back to SwiftUI
+    
+    @EnvironmentObject var viewModel: ProjectListViewModel
     var onFileSaved: (URL) -> Void
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(onFileSaved: onFileSaved)
+        Coordinator(onFileSaved: onFileSaved, viewModel: viewModel)
     }
 
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
@@ -29,9 +31,11 @@ struct DocumentPicker: UIViewControllerRepresentable {
 
     class Coordinator: NSObject, UIDocumentPickerDelegate {
         var onFileSaved: (URL) -> Void
+        @ObservedObject var viewModel: ProjectListViewModel
 
-        init(onFileSaved: @escaping (URL) -> Void) {
+        init(onFileSaved: @escaping (URL) -> Void, viewModel: ProjectListViewModel) {
             self.onFileSaved = onFileSaved
+            self.viewModel = viewModel
         }
 
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
@@ -43,13 +47,14 @@ struct DocumentPicker: UIViewControllerRepresentable {
                 textField.placeholder = "プロジェクト名"
             }
 
-            let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
+            let saveAction = UIAlertAction(title: "保存", style: .default) { _ in
                 guard let projectName = alert.textFields?.first?.text, !projectName.isEmpty else { return }
 
                 // Get Documents directory
                 let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                 let projectFolder = documents.appendingPathComponent(projectName, isDirectory: true)
                 let editedFolder = projectFolder.appendingPathComponent("Edited", isDirectory: true)
+
 
                 do {
                     // Create main project folder
@@ -67,6 +72,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
 
                     // Send the final saved URL back to SwiftUI if needed
                     self.onFileSaved(destination)
+                    self.viewModel.loadProjects()
 
                 } catch {
                     print("❌ Error saving file: \(error.localizedDescription)")
@@ -74,7 +80,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
             }
             
             alert.addAction(saveAction)
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "キャンセル", style: .cancel))
 
             // Present the alert
 //            controller.present(alert, animated: true)
