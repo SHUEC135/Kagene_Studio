@@ -31,7 +31,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
 
     class Coordinator: NSObject, UIDocumentPickerDelegate {
         var onFileSaved: (URL) -> Void
-        @ObservedObject var viewModel: ProjectListViewModel
+        var viewModel: ProjectListViewModel
 
         init(onFileSaved: @escaping (URL) -> Void, viewModel: ProjectListViewModel) {
             self.onFileSaved = onFileSaved
@@ -40,6 +40,15 @@ struct DocumentPicker: UIViewControllerRepresentable {
 
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
             guard let selectedURL = urls.first else { return }
+            
+            guard selectedURL.startAccessingSecurityScopedResource() else {
+                print("❌ Couldn't access security scoped resource")
+                return
+            }
+
+            defer {
+                selectedURL.stopAccessingSecurityScopedResource()
+            }
 
             // Ask for project name using an alert
             let alert = UIAlertController(title: "プロジェクト名を入力", message: nil, preferredStyle: .alert)
@@ -64,7 +73,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
                     try FileManager.default.createDirectory(at: editedFolder, withIntermediateDirectories: true)
 
                     // Copy original file into project folder (not in Edited)
-                    let destination = projectFolder.appendingPathComponent(selectedURL.lastPathComponent)
+                    let destination = projectFolder.appendingPathComponent("\(projectName).mp3")
                     try FileManager.default.copyItem(at: selectedURL, to: destination)
 
                     print("✅ Original file saved to: \(destination)")
@@ -72,7 +81,6 @@ struct DocumentPicker: UIViewControllerRepresentable {
 
                     // Send the final saved URL back to SwiftUI if needed
                     self.onFileSaved(destination)
-                    self.viewModel.loadProjects()
 
                 } catch {
                     print("❌ Error saving file: \(error.localizedDescription)")

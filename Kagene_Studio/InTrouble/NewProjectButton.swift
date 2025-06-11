@@ -11,7 +11,8 @@ struct NewProjectButtonView: View {
     @State private var showPicker = false
     @State private var savedFileURL: URL?
     
-    @ObservedObject var viewModel: ProjectListViewModel
+    @EnvironmentObject var viewModel: ProjectListViewModel
+    var onProjectAdded: () -> Void
 
     var body: some View {
         VStack {
@@ -40,6 +41,7 @@ struct NewProjectButtonView: View {
         .sheet(isPresented: $showPicker) {
             DocumentPicker { savedURL in
                 self.savedFileURL = savedURL
+                onProjectAdded()
             }
             .environmentObject(viewModel)
         }

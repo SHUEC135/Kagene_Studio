@@ -25,8 +25,20 @@ struct AudioTrimmer {
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "[/:*?\"<>|]", with: "_", options: .regularExpression) // Remove invalid chars
 
-        let outputURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent("\(sanitizedFileName).m4a")
+        // Extract project name from sourceURL's parent folder
+        let projectName = sourceURL.deletingLastPathComponent().lastPathComponent
+
+        // Create path: Documents/プロジェクト名/Edited/
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let editedFolderURL = documentsURL
+            .appendingPathComponent(projectName)
+            .appendingPathComponent("Edited")
+
+        // Ensure the Edited folder exists
+        try FileManager.default.createDirectory(at: editedFolderURL, withIntermediateDirectories: true)
+
+        // Final output path
+        let outputURL = editedFolderURL.appendingPathComponent("\(sanitizedFileName).m4a")
 
         exportSession.outputURL = outputURL
         exportSession.outputFileType = .m4a

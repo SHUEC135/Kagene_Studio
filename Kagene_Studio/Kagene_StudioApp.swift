@@ -9,10 +9,13 @@ import SwiftUI
 
 @main
 struct Kagene_StudioApp: App {
+    @StateObject private var viewModel = ProjectListViewModel() // アプリ全体で1つだけ作る
+    
     var body: some Scene {
         WindowGroup {
             ShadowingView()
             ProjectListView()
+                .environmentObject(viewModel) // ✅ ここで全体に共有
         }
     }
 }

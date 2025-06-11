@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct AudioTrimFlowView: View {
-    @StateObject private var viewModel = TrimAudioViewModel()
+    var filePath: String
+    @StateObject private var viewModel: AudioTrimViewModel
     @State private var currentStep: Step = .inputWords
+
+    init(filePath: String) {
+        self.filePath = filePath
+        _viewModel = StateObject(wrappedValue: AudioTrimViewModel(filePath: filePath))
+    }
 
     enum Step {
         case inputWords
@@ -25,7 +31,7 @@ struct AudioTrimFlowView: View {
                     VStack(spacing: 10) {
                         Text("最初の3単語を入力")
                             .font(.headline)
-                        TextField("例: Apple Banana Cat", text: $viewModel.firstThreeWords)
+                        TextField("例: When I was", text: $viewModel.firstThreeWords)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
 

@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct ProjectListView: View {
-    @ObservedObject private var viewModel = ProjectListViewModel()
-
+    @EnvironmentObject var viewModel: ProjectListViewModel
+    
     var body: some View {
         NavigationView {
             VStack {
-                NewProjectButtonView(viewModel: viewModel)
+                NewProjectButtonView {
+                    viewModel.loadProjects()
+                }
                 List {
                     ForEach(viewModel.projects) { project in
                         Section(header:
@@ -21,14 +23,20 @@ struct ProjectListView: View {
                                 Text(project.name)
                                     .font(.headline)
                                 Spacer()
-                                AudioTrimButton()
+                                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                                let originalFileURL = documentsURL
+                                    .appendingPathComponent(project.name)
+                                    .appendingPathComponent("\(project.name).mp3")
+                                AudioTrimButton(filePath: originalFileURL.path)
+                                let originalFilePath = projectOriginalFilePath(for: project)
+                            AudioTrimButton(filePath: originalFilePath)
 //                                Button(action: {
 //                                    // Handle the add action for this project
 //                                }) {
 //                                    Image(systemName: "plus")
 //                                }
                             }
-                            .padding(.trailing)
+//                            .padding(.trailing)
                         ) {
                             ForEach(project.files) { file in
                                 HStack {
@@ -47,6 +55,18 @@ struct ProjectListView: View {
                 }
             }
         }
+    }
+    
+    private func projectOriginalFilePath(for project: AudioProject) -> String {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let originalFileURL = documentsURL
+            .appendingPathComponent(project.name)
+            .appendingPathComponent("\(project.name).mp3")
+        
+        print("🔍 Checking original file path: \(originalFileURL.path)")
+        print("📄 File exists: \(FileManager.default.fileExists(atPath: originalFileURL.path))")
+        
+        return originalFileURL.path
     }
 }
 

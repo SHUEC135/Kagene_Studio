@@ -9,7 +9,7 @@ import Foundation
 import AVFoundation
 import SwiftUI
 
-class TrimAudioViewModel: ObservableObject {
+class AudioTrimViewModel: ObservableObject {
     @Published var firstThreeWords: String = ""
     @Published var startTimeMs: String = ""
     @Published var endTimeMs: String = ""
@@ -17,12 +17,15 @@ class TrimAudioViewModel: ObservableObject {
 
     private var originalAudioURL: URL?
 
-    init() {
-        if let url = Bundle.main.url(forResource: "sample", withExtension: "mp3") {
+    init(filePath: String) {
+        let url = URL(fileURLWithPath: filePath)
+        if FileManager.default.fileExists(atPath: url.path) {
             self.originalAudioURL = url
         } else {
-            self.statusMessage = "Failed to load audio file."
+            self.statusMessage = "Invalid file path."
         }
+        print("📂 Checking path in ViewModel: \(url.path)")
+        print("📄 File exists: \(FileManager.default.fileExists(atPath: url.path))")
     }
 
     func trimAudio() {

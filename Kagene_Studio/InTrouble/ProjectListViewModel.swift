@@ -38,9 +38,9 @@ class ProjectListViewModel: ObservableObject {
                 loadedProjects.append(project)
             }
 
-            DispatchQueue.main.async {
-                self.projects = loadedProjects
-            }
+            self.projects = loadedProjects
+            print("✅ Reloaded projects: \(loadedProjects.count)")
+            
         } catch {
             print("Error loading projects: \(error)")
         }
