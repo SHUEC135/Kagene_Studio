@@ -11,19 +11,30 @@ struct ProjectListView: View {
     @ObservedObject private var viewModel = ProjectListViewModel()
 
     var body: some View {
-        AudioTrimButton()
         NavigationView {
             VStack {
                 NewProjectButtonView(viewModel: viewModel)
                 List {
                     ForEach(viewModel.projects) { project in
-                        Section(header: Text(project.name).font(.headline)) {
+                        Section(header:
+                            HStack {
+                                Text(project.name)
+                                    .font(.headline)
+                                Spacer()
+                                AudioTrimButton()
+//                                Button(action: {
+//                                    // Handle the add action for this project
+//                                }) {
+//                                    Image(systemName: "plus")
+//                                }
+                            }
+                            .padding(.trailing)
+                        ) {
                             ForEach(project.files) { file in
                                 HStack {
                                     Text(file.name)
                                         .lineLimit(1)
                                     Spacer()
-                                    // Optional: add a play button or other actions
                                     Image(systemName: "play.circle")
                                 }
                             }

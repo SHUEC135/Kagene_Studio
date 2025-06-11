@@ -11,8 +11,11 @@ struct AudioTrimButton: View {
     @State private var showModal = false
 
     var body: some View {
-        Button("Start Trimming") {
+        Button(action: {
             showModal = true
+        }) {
+            Image(systemName: "plus")
+                .font(.title2) // You can adjust size: .title, .title2, .largeTitle
         }
         .sheet(isPresented: $showModal) {
             AudioTrimFlowView()
