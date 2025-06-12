@@ -11,6 +11,7 @@ struct AudioTrimFlowView: View {
     var filePath: String
     @StateObject private var viewModel: AudioTrimViewModel
     @State private var currentStep: Step = .inputWords
+    @Environment(\.dismiss) private var dismiss
 
     init(filePath: String) {
         self.filePath = filePath
@@ -51,6 +52,7 @@ struct AudioTrimFlowView: View {
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                         Button("Trim Audio") {
                             viewModel.trimAudio()
+                            dismiss()
                         }
                     }
                 }

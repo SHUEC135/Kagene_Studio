@@ -36,9 +36,11 @@ struct AudioTrimmer {
 
         // Ensure the Edited folder exists
         try FileManager.default.createDirectory(at: editedFolderURL, withIntermediateDirectories: true)
+        print("📁 Trimmed audio at: \(editedFolderURL)")
 
         // Final output path
         let outputURL = editedFolderURL.appendingPathComponent("\(sanitizedFileName).m4a")
+        print("📄 Exists: \(FileManager.default.fileExists(atPath: outputURL.path))")
 
         exportSession.outputURL = outputURL
         exportSession.outputFileType = .m4a
@@ -53,3 +55,4 @@ struct AudioTrimmer {
         }
     }
 }
+

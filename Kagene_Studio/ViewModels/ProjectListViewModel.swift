@@ -9,6 +9,7 @@ import Foundation
 
 class ProjectListViewModel: ObservableObject {
     @Published var projects: [AudioProject] = []
+    @Published var files: [AudioFile] = []
 
     func loadProjects() {
         guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {

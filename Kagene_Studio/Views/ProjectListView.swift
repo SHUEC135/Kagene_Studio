@@ -28,8 +28,8 @@ struct ProjectListView: View {
                                     .appendingPathComponent(project.name)
                                     .appendingPathComponent("\(project.name).mp3")
                                 AudioTrimButton(filePath: originalFileURL.path)
-                                let originalFilePath = projectOriginalFilePath(for: project)
-                            AudioTrimButton(filePath: originalFilePath)
+//                                let originalFilePath = projectOriginalFilePath(for: project)
+//                                AudioTrimButton(filePath: originalFilePath)
 //                                Button(action: {
 //                                    // Handle the add action for this project
 //                                }) {
