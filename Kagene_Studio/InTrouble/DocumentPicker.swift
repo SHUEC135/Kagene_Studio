@@ -46,10 +46,6 @@ struct DocumentPicker: UIViewControllerRepresentable {
                 return
             }
 
-            defer {
-                selectedURL.stopAccessingSecurityScopedResource()
-            }
-
             // Ask for project name using an alert
             let alert = UIAlertController(title: "プロジェクト名を入力", message: nil, preferredStyle: .alert)
             alert.addTextField { textField in
@@ -81,6 +77,10 @@ struct DocumentPicker: UIViewControllerRepresentable {
 
                     // Send the final saved URL back to SwiftUI if needed
                     self.onFileSaved(destination)
+                    defer {
+                        selectedURL.stopAccessingSecurityScopedResource()
+                    }
+
 
                 } catch {
                     print("❌ Error saving file: \(error.localizedDescription)")
