@@ -11,17 +11,18 @@ import AVFoundation
 class AudioPlayerViewModel: ObservableObject {
     @Published var isPlaying: Bool = false
     @Published var currentTime: TimeInterval = 0.00
+    let filePath: String
     
     private var player: AVAudioPlayer?
     
-    init() {
-        if let url = Bundle.main.url(forResource: "sample", withExtension: "mp3") {
-            do {
-                player = try AVAudioPlayer(contentsOf: url)
-                player?.prepareToPlay()
-            } catch {
-                print("Error loading audio: \(error)")
-            }
+    init(filePath: String) {
+        self.filePath = filePath
+        let url = URL(fileURLWithPath: filePath)
+        do {
+            player = try AVAudioPlayer(contentsOf: url)
+            player?.prepareToPlay()
+        } catch {
+            print("Error loading audio: \(error)")
         }
     }
     

@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct ShadowingView: View {
+    var filePath: String
+    
     var body: some View {
-        AudioPlayerView()
+        AudioPlayerView(filePath: filePath)
         RecordingView()
     }
 }
 
-#Preview {
-    ShadowingView()
-}
+//#Preview {
+//    ShadowingView()
+//}

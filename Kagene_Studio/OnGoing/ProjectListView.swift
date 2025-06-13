@@ -11,6 +11,7 @@ struct ProjectListView: View {
     @EnvironmentObject var viewModel: ProjectListViewModel
     
     var body: some View {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         NavigationView {
             VStack {
                 NewProjectButtonView {
@@ -23,27 +24,34 @@ struct ProjectListView: View {
                                 Text(project.name)
                                     .font(.headline)
                                 Spacer()
-                                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                                let originalFileURL = documentsURL
+                                AudioTrimButton(filePath: documentsURL
                                     .appendingPathComponent(project.name)
                                     .appendingPathComponent("\(project.name).mp3")
-                                AudioTrimButton(filePath: originalFileURL.path)
-//                                let originalFilePath = projectOriginalFilePath(for: project)
-//                                AudioTrimButton(filePath: originalFilePath)
-//                                Button(action: {
-//                                    // Handle the add action for this project
-//                                }) {
-//                                    Image(systemName: "plus")
-//                                }
+                                    .path)
                             }
-//                            .padding(.trailing)
                         ) {
                             ForEach(project.files) { file in
                                 HStack {
-                                    Text(file.name)
-                                        .lineLimit(1)
+                                    NavigationLink(
+                                        destination: ShadowingView(filePath: documentsURL
+                                            .appendingPathComponent(project.name)
+                                            .appendingPathComponent("Edited")
+                                            .appendingPathComponent(file.name)
+                                            .path)
+                                    ) {
+                                        Text(file.name)
+                                            .lineLimit(1)
+                                    }
                                     Spacer()
                                     Image(systemName: "play.circle")
+                                }
+                                .onAppear {
+                                    let fullPath = documentsURL
+                                        .appendingPathComponent(project.name)
+                                        .appendingPathComponent("Edited")
+                                        .appendingPathComponent(file.name)
+                                        .path
+                                    print("🔍 Loading audio from: \(fullPath)")
                                 }
                             }
                         }

@@ -9,7 +9,13 @@ import SwiftUI
 
 
 struct AudioPlayerView: View {
-    @StateObject private var viewModel = AudioPlayerViewModel()
+    @StateObject private var viewModel: AudioPlayerViewModel
+    let filePath: String
+
+    init(filePath: String) {
+        self.filePath = filePath
+        _viewModel = StateObject(wrappedValue: AudioPlayerViewModel(filePath: filePath))
+    }
 
     var body: some View {
         HStack {
@@ -28,6 +34,6 @@ struct AudioPlayerView: View {
     }
 }
 
-#Preview {
-    AudioPlayerView()
-}
+//#Preview {
+//    AudioPlayerView()
+//}

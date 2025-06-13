@@ -13,7 +13,6 @@ struct Kagene_StudioApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ShadowingView()
             ProjectListView()
                 .environmentObject(viewModel) // ✅ ここで全体に共有
         }
