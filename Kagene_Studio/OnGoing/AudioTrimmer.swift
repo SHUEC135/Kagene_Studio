@@ -40,13 +40,18 @@ struct AudioTrimmer {
 
         // Final output path
         let outputURL = editedFolderURL.appendingPathComponent("\(sanitizedFileName).m4a")
-        print("📄 Exists: \(FileManager.default.fileExists(atPath: outputURL.path))")
 
         exportSession.outputURL = outputURL
         exportSession.outputFileType = .m4a
         exportSession.timeRange = CMTimeRange(start: startTime, end: endTime)
 
         try await exportSession.export()
+        print("Export completed with status: \(exportSession.status.rawValue)")
+        if let error = exportSession.error {
+            print("Export error: \(error.localizedDescription)")
+        }
+        let existsAfter = FileManager.default.fileExists(atPath: outputURL.path)
+        print("📄 Exists after export: \(existsAfter)")
 
         if exportSession.status == .completed {
             return outputURL
@@ -55,4 +60,3 @@ struct AudioTrimmer {
         }
     }
 }
-

@@ -12,6 +12,7 @@ struct AudioTrimFlowView: View {
     @StateObject private var viewModel: AudioTrimViewModel
     @State private var currentStep: Step = .inputWords
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var projectListViewModel: ProjectListViewModel
 
     init(filePath: String) {
         self.filePath = filePath
@@ -78,6 +79,9 @@ struct AudioTrimFlowView: View {
                     }
                 }
             }
+        }
+        .onDisappear {
+            projectListViewModel.loadProjects()
         }
     }
 
