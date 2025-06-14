@@ -1,105 +1,57 @@
-//
-//  SliderView.swift
-//  Kagene_Studio
-//
-//  Created by 本多真一朗 on 2025/06/13.
-//
-
-// WaveformScrollSliderView.swift
-//
-//  SliderView.swift
-//  Kagene_Studio
-//
-//  Created by 本多真一朗 on 2025/06/13.
-//
-
-// WaveformScrollSliderView.swift
 import SwiftUI
 
 struct WaveformScrollSliderView: View {
     @StateObject private var vm: WaveformScrollSliderViewModel
-    private let contentRatio: CGFloat = 3   // 波形バー幅 = 画面幅×3
+    private let contentRatio: CGFloat = 3
     private let barHeight: CGFloat = 300
-    
-    /// - Parameter filePath: ローカル音源ファイルのパス文字列
+
     init(filePath: String) {
         _vm = StateObject(wrappedValue: WaveformScrollSliderViewModel(filePath: filePath))
     }
-    
+
     var body: some View {
         VStack(spacing: 8) {
             GeometryReader { geo in
+                let totalW = geo.size.width * contentRatio
+                let centerX = geo.size.width / 2
+
                 ZStack {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 0) {
-                            // 左余白 = 画面幅/2
-                            Color.clear
-                                .frame(width: geo.size.width / 2)
-                            
-                            // 波形プレースホルダー (あとで実データ描画に置き換え)
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(width: geo.size.width * contentRatio,
-                                       height: barHeight)
-                                .background(
-                                    GeometryReader { proxy in
-                                        Color.clear
-                                            .preference(
-                                                key: ScrollOffsetKey.self,
-                                                // proxy.frame(in: .named("wave")) の origin.x を渡す
-                                                value: proxy.frame(in: .named("wave")).origin.x
-                                            )
-                                    }
-                                )
-                            
-                            // 右余白 = 画面幅/2
-                            Color.clear
-                                .frame(width: geo.size.width / 2)
-                        }
-                    }
-                    .coordinateSpace(name: "wave")
-                    .onPreferenceChange(ScrollOffsetKey.self) { originX in
-                        let leftPad = geo.size.width / 2
-                        // contentOffset.x に相当する値を計算
-                        let contentOffset = leftPad - originX
-                        let waveformWidth = geo.size.width * contentRatio
-                        vm.updateTime(offsetX: contentOffset,
-                                      waveformWidth: waveformWidth)
-                    }
+                    // 波形プレースホルダー
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(width: totalW, height: barHeight)
+                        // 再生位置に合わせて自動オフセット
+                        .offset(x: centerX - CGFloat(vm.progress) * totalW)
+                        .clipped()
                     
-                    // 中央固定の青いライン
                     Rectangle()
                         .fill(Color.blue)
                         .frame(width: 2, height: barHeight)
+                        .position(x: centerX, y: barHeight / 2)
                 }
             }
             .frame(height: barHeight)
-            
+
             HStack {
-                Button(action: { vm.play() }) {
-                    Image(systemName: "play.fill")
-                }
-                .padding(.horizontal)
-                
-                Button(action: { vm.pause() }) {
-                    Image(systemName: "pause.fill")
-                }
+                Button { vm.play() } label: { Image(systemName: "play.fill") }
+                Button { vm.pause() } label: { Image(systemName: "pause.fill") }
             }
-                // mm:ss.SS 表示
+            .padding(.horizontal)
+
+            // ✨ ここが滑らかシーク用の Slider ✨
+            Slider(
+                value: Binding(
+                    get: { vm.progress },
+                    set: { newVal in vm.seek(to: newVal) }
+                ),
+                in: 0...1
+            )
+            .padding(.horizontal)
+
             Text(vm.displayTime)
-                .font(.caption)              // もしくは .font(.system(.caption, design: .monospaced))
-                .monospacedDigit()           // ← これで数字を等幅に
+                .font(.caption)
+                .monospacedDigit()
                 .padding()
-            
-            .padding()
-        }
-    }
-    
-    // PreferenceKey を同一ファイルに定義
-    struct ScrollOffsetKey: PreferenceKey {
-        static var defaultValue: CGFloat = 0
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value = nextValue()
         }
     }
 }

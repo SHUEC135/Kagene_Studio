@@ -4,6 +4,8 @@ import AVFoundation
 final class WaveformScrollSliderViewModel: ObservableObject {
     @Published var selectedTimeMs: Int = 0
     @Published var displayTime: String = "0:00.00"
+    @Published var progress: Double = 0
+    
     
     private let duration: Double
     private var audioPlayer: AVAudioPlayer?
@@ -72,8 +74,10 @@ final class WaveformScrollSliderViewModel: ObservableObject {
         stopTimer()
         // 0.05秒ごとに再生位置を取得してUIを更新
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
-            guard let self = self, let player = self.audioPlayer else { return }
-            let ms = Int((player.currentTime * 1000).rounded())
+            guard let self = self, let p = self.audioPlayer else { return }
+            let t = p.currentTime
+            self.progress = t / self.duration
+            let ms = Int((t * 1000).rounded())
             self.selectedTimeMs = ms
             self.updateDisplayTime(ms: ms)
             // ※ここでスクロール位置を更新するためのコールバック等を呼び出せるように拡張しておくと次ステップが楽です
@@ -87,18 +91,14 @@ final class WaveformScrollSliderViewModel: ObservableObject {
     }
 
     // MARK: 既存スクロール更新
-    func updateTime(offsetX: CGFloat, waveformWidth: CGFloat) {
-        // 0…1 に正規化
-        let ratio = min(max(Double(offsetX / waveformWidth), 0), 1)
-        let ms = Int((ratio * duration * 1000).rounded())
+    func seek(to ratio: Double) {
+        let clamped = min(max(ratio, 0), 1)
+        progress = clamped
+        let ms = Int((clamped * duration * 1000).rounded())
         selectedTimeMs = ms
         updateDisplayTime(ms: ms)
-
-        // ── ここでオーディオプレーヤーの再生位置を更新 ──
-        if let player = audioPlayer {
-            if player.isPlaying {
-                player.currentTime = Double(ms) / 1000.0
-            }
+        if let p = audioPlayer {
+            p.currentTime = Double(ms) / 1000.0
         }
     }
     
