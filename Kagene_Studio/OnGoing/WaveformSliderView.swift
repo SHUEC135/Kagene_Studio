@@ -5,7 +5,13 @@
 //  Created by 本多真一朗 on 2025/06/13.
 //
 
-
+// WaveformScrollSliderView.swift
+//
+//  SliderView.swift
+//  Kagene_Studio
+//
+//  Created by 本多真一朗 on 2025/06/13.
+//
 
 // WaveformScrollSliderView.swift
 import SwiftUI
@@ -13,23 +19,23 @@ import SwiftUI
 struct WaveformScrollSliderView: View {
     @StateObject private var vm: WaveformScrollSliderViewModel
     private let contentRatio: CGFloat = 3   // 波形バー幅 = 画面幅×3
-    private let barHeight: CGFloat = 100
-
+    private let barHeight: CGFloat = 300
+    
     /// - Parameter filePath: ローカル音源ファイルのパス文字列
     init(filePath: String) {
         _vm = StateObject(wrappedValue: WaveformScrollSliderViewModel(filePath: filePath))
     }
-
+    
     var body: some View {
         VStack(spacing: 8) {
             GeometryReader { geo in
                 ZStack {
-                    ScrollView(.horizontal, showsIndicators: true) {
+                    ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 0) {
                             // 左余白 = 画面幅/2
                             Color.clear
                                 .frame(width: geo.size.width / 2)
-
+                            
                             // 波形プレースホルダー (あとで実データ描画に置き換え)
                             Rectangle()
                                 .fill(Color.gray.opacity(0.2))
@@ -39,13 +45,13 @@ struct WaveformScrollSliderView: View {
                                     GeometryReader { proxy in
                                         Color.clear
                                             .preference(
-                                              key: ScrollOffsetKey.self,
-                                              // proxy.frame(in: .named("wave")) の origin.x を渡す
-                                              value: proxy.frame(in: .named("wave")).origin.x
+                                                key: ScrollOffsetKey.self,
+                                                // proxy.frame(in: .named("wave")) の origin.x を渡す
+                                                value: proxy.frame(in: .named("wave")).origin.x
                                             )
                                     }
                                 )
-
+                            
                             // 右余白 = 画面幅/2
                             Color.clear
                                 .frame(width: geo.size.width / 2)
@@ -60,7 +66,7 @@ struct WaveformScrollSliderView: View {
                         vm.updateTime(offsetX: contentOffset,
                                       waveformWidth: waveformWidth)
                     }
-
+                    
                     // 中央固定の青いライン
                     Rectangle()
                         .fill(Color.blue)
@@ -68,19 +74,32 @@ struct WaveformScrollSliderView: View {
                 }
             }
             .frame(height: barHeight)
-
-            // mm:ss.SS 表示
+            
+            HStack {
+                Button(action: { vm.play() }) {
+                    Image(systemName: "play.fill")
+                }
+                .padding(.horizontal)
+                
+                Button(action: { vm.pause() }) {
+                    Image(systemName: "pause.fill")
+                }
+            }
+                // mm:ss.SS 表示
             Text(vm.displayTime)
-                .font(.caption)
+                .font(.caption)              // もしくは .font(.system(.caption, design: .monospaced))
+                .monospacedDigit()           // ← これで数字を等幅に
+                .padding()
+            
+            .padding()
         }
-        .padding()
     }
-}
-
-// PreferenceKey を同一ファイルに定義
-struct ScrollOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
+    
+    // PreferenceKey を同一ファイルに定義
+    struct ScrollOffsetKey: PreferenceKey {
+        static var defaultValue: CGFloat = 0
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = nextValue()
+        }
     }
 }
