@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AudioTrimFlowView: View {
-    var filePath: String
+    let filePath: String
     @StateObject private var viewModel: AudioTrimViewModel
     @State private var currentStep: Step = .inputWords
     @Environment(\.dismiss) private var dismiss
@@ -40,6 +40,7 @@ struct AudioTrimFlowView: View {
                 case .start:
                     VStack {
                         Text("Enter Start Time (ms)")
+                        WaveformScrollSliderView(filePath: filePath)
                         TextField("Start Time", text: $viewModel.startTimeMs)
                             .keyboardType(.decimalPad)
                             .textFieldStyle(RoundedBorderTextFieldStyle())

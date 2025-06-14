@@ -43,7 +43,6 @@ struct ProjectListView: View {
                                             .lineLimit(1)
                                     }
                                     Spacer()
-                                    Image(systemName: "play.circle")
                                 }
                                 .onAppear {
                                     let fullPath = documentsURL
