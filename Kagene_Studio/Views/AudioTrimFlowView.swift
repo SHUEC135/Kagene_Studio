@@ -10,6 +10,7 @@ import SwiftUI
 struct AudioTrimFlowView: View {
     let filePath: String
     @StateObject private var viewModel: AudioTrimViewModel
+    @StateObject private var sliderViewModel: WaveformScrollSliderViewModel
     @State private var currentStep: Step = .inputWords
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var projectListViewModel: ProjectListViewModel
@@ -17,12 +18,21 @@ struct AudioTrimFlowView: View {
     init(filePath: String) {
         self.filePath = filePath
         _viewModel = StateObject(wrappedValue: AudioTrimViewModel(filePath: filePath))
+        _sliderViewModel = StateObject(wrappedValue: WaveformScrollSliderViewModel(filePath: filePath))
     }
 
     enum Step {
         case inputWords
         case start
         case end
+    }
+
+    private func formatTime(_ ms: Double) -> String {
+        let totalMs = Int(ms)
+        let minutes = totalMs / 60000
+        let seconds = (totalMs % 60000) / 1000
+        let hundredths = (totalMs % 1000) / 10
+        return String(format: "%02d:%02d.%02d", minutes, seconds, hundredths)
     }
 
     var body: some View {
@@ -41,9 +51,9 @@ struct AudioTrimFlowView: View {
                     VStack {
                         Text("Enter Start Time (ms)")
                         WaveformScrollSliderView(filePath: filePath)
-                        TextField("Start Time", text: $viewModel.startTimeMs)
-                            .keyboardType(.decimalPad)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Text("Selected Start Time: \(sliderViewModel.selectedTimeMs)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
 
                 case .end:
@@ -96,12 +106,13 @@ struct AudioTrimFlowView: View {
             }
 
         case .start:
-            if let start = Double(viewModel.startTimeMs), start >= 0 {
+            viewModel.startTimeMs = String(sliderViewModel.selectedTimeMs)
+            if sliderViewModel.selectedTimeMs >= 0 {
                 currentStep = .end
             } else {
                 viewModel.statusMessage = "無効な開始時間です"
             }
-
+            
         case .end:
             break
         }

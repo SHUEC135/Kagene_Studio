@@ -32,9 +32,15 @@ struct WaveformScrollSliderView: View {
             }
             .frame(height: barHeight)
 
-            HStack {
-                Button { vm.play() } label: { Image(systemName: "play.fill") }
-                Button { vm.pause() } label: { Image(systemName: "pause.fill") }
+            Button {
+                if vm.isPlaying {
+                    vm.pause()
+                } else {
+                    vm.play()
+                }
+            } label: {
+                Image(systemName: vm.isPlaying ? "pause.fill" : "play.fill")
+                    .font(.title2)
             }
             .padding(.horizontal)
 

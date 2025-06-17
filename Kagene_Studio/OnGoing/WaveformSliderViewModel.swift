@@ -2,6 +2,7 @@ import SwiftUI
 import AVFoundation
 
 final class WaveformScrollSliderViewModel: ObservableObject {
+    @Published var isPlaying: Bool = false
     @Published var selectedTimeMs: Int = 0
     @Published var displayTime: String = "0:00.00"
     @Published var progress: Double = 0
@@ -42,6 +43,7 @@ final class WaveformScrollSliderViewModel: ObservableObject {
         }
 
         updateDisplayTime(ms: 0)
+    
     }
 
     // MARK: 再生／一時停止
@@ -56,6 +58,7 @@ final class WaveformScrollSliderViewModel: ObservableObject {
         print("▶️ play() called at \(player.currentTime)s")
         
         startTimer()  // ← タイマー開始
+        isPlaying = true
     }
 
     func pause() {
@@ -67,6 +70,7 @@ final class WaveformScrollSliderViewModel: ObservableObject {
         print("⏸ pause() called at \(player.currentTime)s")
         
         stopTimer()   // ← タイマー停止
+        isPlaying = false
     }
     
     // MARK: タイマー制御

@@ -22,7 +22,7 @@ struct ProjectListView: View {
                         Section(header:
                             HStack {
                                 Text(project.name)
-                                    .font(.headline)
+                                    .font(.title3)
                                 Spacer()
                                 AudioTrimButton(filePath: documentsURL
                                     .appendingPathComponent(project.name)
