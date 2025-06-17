@@ -5,11 +5,14 @@ final class WaveformScrollSliderViewModel: ObservableObject {
     @Published var selectedTimeMs: Int = 0
     @Published var displayTime: String = "0:00.00"
     
-    private let duration: Double
+    let duration: Double
+//    let secondsPerScreen: Double
+    
     private var audioPlayer: AVAudioPlayer?
     private var timer: Timer?    // ← タイマー用プロパティ追加
 
-    init(filePath: String) {
+    init(filePath: String/*, secondsPerScreen: Double = 4.0*/) {
+//        self.secondsPerScreen = secondsPerScreen
         //───(1) オーディオセッション設定───────────────────────────
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)

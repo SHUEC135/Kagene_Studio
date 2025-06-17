@@ -10,6 +10,7 @@ import SwiftUI
 struct AudioTrimFlowView: View {
     let filePath: String
     @StateObject private var viewModel: AudioTrimViewModel
+    @StateObject private var waveformVM: WaveformScrollSliderViewModel
     @State private var currentStep: Step = .inputWords
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var projectListViewModel: ProjectListViewModel
@@ -17,6 +18,9 @@ struct AudioTrimFlowView: View {
     init(filePath: String) {
         self.filePath = filePath
         _viewModel = StateObject(wrappedValue: AudioTrimViewModel(filePath: filePath))
+        _waveformVM = StateObject(
+            wrappedValue: WaveformScrollSliderViewModel(filePath: filePath)
+        )
     }
 
     enum Step {
@@ -40,10 +44,7 @@ struct AudioTrimFlowView: View {
                 case .start:
                     VStack {
                         Text("Enter Start Time (ms)")
-                        WaveformScrollSliderView(filePath: filePath)
-                        TextField("Start Time", text: $viewModel.startTimeMs)
-                            .keyboardType(.decimalPad)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        WaveformScrollSliderView(filePath: filePath, vm: waveformVM)
                     }
 
                 case .end:
@@ -96,8 +97,11 @@ struct AudioTrimFlowView: View {
             }
 
         case .start:
-            if let start = Double(viewModel.startTimeMs), start >= 0 {
+            let startMs = waveformVM.selectedTimeMs
+            if startMs >= 0 {
+                viewModel.startTimeMs = String(startMs)
                 currentStep = .end
+                print(String(viewModel.startTimeMs))
             } else {
                 viewModel.statusMessage = "無効な開始時間です"
             }

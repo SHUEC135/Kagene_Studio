@@ -17,18 +17,26 @@
 import SwiftUI
 
 struct WaveformScrollSliderView: View {
-    @StateObject private var vm: WaveformScrollSliderViewModel
-    private let contentRatio: CGFloat = 3   // 波形バー幅 = 画面幅×3
+    @ObservedObject private var vm: WaveformScrollSliderViewModel
+    private let secondsPerScreen: Double
     private let barHeight: CGFloat = 300
     
     /// - Parameter filePath: ローカル音源ファイルのパス文字列
-    init(filePath: String) {
-        _vm = StateObject(wrappedValue: WaveformScrollSliderViewModel(filePath: filePath))
+    init(
+        filePath: String,
+        secondsPerScreen: Double = 4.0,
+        vm: WaveformScrollSliderViewModel
+    ) {
+        self.secondsPerScreen = secondsPerScreen
+        self.vm = vm
     }
     
     var body: some View {
         VStack(spacing: 8) {
             GeometryReader { geo in
+                let ratio = vm.duration / secondsPerScreen
+                let waveformWidth = geo.size.width * CGFloat(ratio)
+
                 ZStack {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 0) {
@@ -39,7 +47,7 @@ struct WaveformScrollSliderView: View {
                             // 波形プレースホルダー (あとで実データ描画に置き換え)
                             Rectangle()
                                 .fill(Color.gray.opacity(0.2))
-                                .frame(width: geo.size.width * contentRatio,
+                                .frame(width: waveformWidth/2,
                                        height: barHeight)
                                 .background(
                                     GeometryReader { proxy in
@@ -62,7 +70,6 @@ struct WaveformScrollSliderView: View {
                         let leftPad = geo.size.width / 2
                         // contentOffset.x に相当する値を計算
                         let contentOffset = leftPad - originX
-                        let waveformWidth = geo.size.width * contentRatio
                         vm.updateTime(offsetX: contentOffset,
                                       waveformWidth: waveformWidth)
                     }
