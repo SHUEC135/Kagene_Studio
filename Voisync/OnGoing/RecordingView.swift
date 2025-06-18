@@ -12,34 +12,30 @@ struct RecordingView: View {
     @StateObject private var recordPlayingVM = RecordPlayingViewModel()
     
     var body: some View {
-        VStack {
-            Text("Hold to Record")
-                .padding()
+        VStack(spacing: 24) {
+            Text("録音音声")
+                .font(.system(size: 24, weight: .bold))
+            Text("長押ししながら録音")
+                .font(.system(size: 24, weight: .bold))
+                .padding(.horizontal, 24)
+                .padding(.vertical, 12)
                 .background(Color.red)
                 .foregroundColor(.white)
                 .clipShape(Capsule())
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { _ in
-                            if !recordingVM.isRecording {
-                                recordingVM.startRecording()
-                            }
-                        }
-                        .onEnded { _ in
-                            recordingVM.stopRecording()
-                            recordPlayingVM.loadAudio()
-                        }
-                )
 //            Button("Record") {
 //                recordPlayingVM.loadAudio()
 //                recordingVM.startRecording()
 //            }
-            Button(recordPlayingVM.isPlaying ? "Pause" : "Play") {
+            Button {
                 if recordPlayingVM.isPlaying {
                     recordPlayingVM.pause()
                 } else {
                     recordPlayingVM.play()
                 }
+            } label: {
+                Image(systemName: recordPlayingVM.isPlaying ? "pause.fill" : "play.fill")
+                    .font(.system(size: 96))
+                    .foregroundColor(.primary)
             }
         }
     }

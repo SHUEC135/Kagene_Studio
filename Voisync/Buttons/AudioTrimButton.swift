@@ -10,6 +10,7 @@ import SwiftUI
 struct AudioTrimButton: View {
     var filePath: String
     @State private var showModal = false
+    
 
     init(filePath: String) {
         self.filePath = filePath

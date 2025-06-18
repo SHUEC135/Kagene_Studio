@@ -31,18 +31,22 @@ struct ProjectListView: View {
                                 AudioTrimButton(filePath: documentsURL
                                     .appendingPathComponent(project.name)
                                     .appendingPathComponent("\(project.name).mp3")
-                                    .path)
+                                    .path
+                                )
                             }
 
                         ) {
                             ForEach(project.files) { file in
                                 HStack {
                                     NavigationLink(
-                                        destination: ShadowingView(filePath: documentsURL
+                                        destination: ShadowingView(
+                                            filePath: documentsURL
                                             .appendingPathComponent(project.name)
                                             .appendingPathComponent("Edited")
                                             .appendingPathComponent(file.name)
-                                            .path)
+                                            .path,
+                                            fileName: file.name
+                                        )
                                     ) {
                                         Text((file.name as NSString).deletingPathExtension)
                                             .lineLimit(1)
