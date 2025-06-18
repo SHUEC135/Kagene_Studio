@@ -36,35 +36,30 @@ struct AudioTrimFlowView: View {
                 case .inputWords:
                     VStack(spacing: 10) {
                         Text("最初の3単語を入力")
-                            .font(.headline)
+                            .font(.title2.weight(.semibold))
+                            .foregroundColor(.primary)
                         TextField("例: When I was", text: $viewModel.firstThreeWords)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
 
                 case .start:
                     VStack {
-                        Text("Enter Start Time (ms)")
+                        Text("開始地点を選択")
+                            .font(.title2.weight(.semibold))
+                            .foregroundColor(.primary)
+                        Text("タイマーの時間が開始地点です")
+                            .font(.title3.weight(.regular))
                         WaveformScrollSliderView(filePath: filePath, vm: waveformVM)
                     }
 
                 case .end:
                     VStack {
-                        Text("Enter End Time (ms)")
+                        Text("終了地点を選択")
+                            .font(.title2.weight(.semibold))
+                            .foregroundColor(.primary)
+                        Text("タイマーの時間が終了地点です")
+                            .font(.title3.weight(.regular))
                         WaveformScrollSliderView(filePath: filePath, vm: waveformVM)
-                        Button("Trim Audio") {
-                            let endMs = waveformVM.selectedTimeMs
-                            if endMs >= 0,
-                               let startMsInt = Int(viewModel.startTimeMs),
-                               endMs > startMsInt {
-                                viewModel.endTimeMs = String(endMs)
-                                print("✂️Trimming ends from \(String(viewModel.endTimeMs))ms")
-                                viewModel.trimAudio()
-                                dismiss()
-                            }
-                            else {
-                                viewModel.statusMessage = "開始時間より大きい値を指定してください"
-                            }
-                        }
                     }
                 }
 
@@ -82,7 +77,21 @@ struct AudioTrimFlowView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if currentStep != .end {
+                    if currentStep == .end {
+                        Button("完了") {
+                            let endMs = waveformVM.selectedTimeMs
+                            if endMs >= 0,
+                               let startMsInt = Int(viewModel.startTimeMs),
+                               endMs > startMsInt {
+                                viewModel.endTimeMs = String(endMs)
+                                print("✂️Trimming ends from \(String(viewModel.endTimeMs))ms")
+                                viewModel.trimAudio()
+                                dismiss()
+                            } else {
+                                viewModel.statusMessage = "開始時間より大きい値を指定してください"
+                            }
+                        }
+                    } else {
                         Button("次へ") {
                             moveForward()
                         }

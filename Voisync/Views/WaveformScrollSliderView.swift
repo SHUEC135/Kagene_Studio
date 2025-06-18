@@ -85,6 +85,7 @@ struct WaveformScrollSliderView: View {
                     Rectangle()
                         .fill(Color.blue)
                         .frame(width: 2, height: barHeight)
+                        .foregroundColor(.primary)
                     
                 }
             }
@@ -95,23 +96,30 @@ struct WaveformScrollSliderView: View {
             
             
             .padding()
-            HStack {
-                Button(action: { vm.play() }) {
-                    Image(systemName: "play.fill")
-                }
-                .padding(.horizontal)
-                
-                Button(action: { vm.pause() }) {
-                    Image(systemName: "pause.fill")
-                }
-            }
-            // mm:ss.SS 表示
+            
             Text(vm.displayTime)
-                .font(.caption)              // もしくは .font(.system(.caption, design: .monospaced))
+                .font(.title.weight(.bold))
+                .foregroundColor(.primary)
+            // もしくは .font(.system(.caption, design: .monospaced))
                 .monospacedDigit()           // ← これで数字を等幅に
                 .padding()
             
                 .padding()
+            Button(action: {
+                if vm.isPlaying {
+                    vm.pause()
+                } else {
+                    vm.play()
+                }
+            }) {
+                Image(systemName: vm.isPlaying ? "pause.fill" : "play.fill")
+                    .font(.system(size: 96))
+                    .foregroundColor(.primary)
+            }
+            .padding(.horizontal)
+            
+            // mm:ss.SS 表示
+
         }
         
     }

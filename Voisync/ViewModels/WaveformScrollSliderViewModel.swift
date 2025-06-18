@@ -5,6 +5,7 @@ import AVFoundation
 final class WaveformScrollSliderViewModel: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var selectedTimeMs: Int = 0
     @Published var displayTime: String = "0:00.00"
+    @Published var isPlaying: Bool = false
     
     var duration: Double = 0
     
@@ -58,6 +59,7 @@ final class WaveformScrollSliderViewModel: NSObject, ObservableObject, AVAudioPl
             print("🔴 play(): audioPlayer is nil")
             return
         }
+        isPlaying = true
         // 現在の selectedTimeMs から再生
         player.currentTime = Double(selectedTimeMs) / 1000.0
         player.play()
@@ -71,6 +73,7 @@ final class WaveformScrollSliderViewModel: NSObject, ObservableObject, AVAudioPl
             print("🔴 pause(): audioPlayer is nil")
             return
         }
+        isPlaying = false
         player.pause()
         print("⏸ pause() called at \(player.currentTime)s")
         
