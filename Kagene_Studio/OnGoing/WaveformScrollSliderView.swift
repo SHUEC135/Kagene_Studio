@@ -20,6 +20,7 @@ struct WaveformScrollSliderView: View {
     @ObservedObject private var vm: WaveformScrollSliderViewModel
     private let secondsPerScreen: Double
     private let barHeight: CGFloat = 300
+    private let filePath: String
     
     /// - Parameter filePath: ローカル音源ファイルのパス文字列
     init(
@@ -29,6 +30,7 @@ struct WaveformScrollSliderView: View {
     ) {
         self.secondsPerScreen = secondsPerScreen
         self.vm = vm
+        self.filePath = filePath
     }
     
     var body: some View {
@@ -36,7 +38,8 @@ struct WaveformScrollSliderView: View {
             GeometryReader { geo in
                 let ratio = vm.duration / secondsPerScreen
                 let waveformWidth = geo.size.width * CGFloat(ratio)
-
+                
+                
                 ZStack {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 0) {
@@ -45,24 +48,28 @@ struct WaveformScrollSliderView: View {
                                 .frame(width: geo.size.width / 2)
                             
                             // 波形プレースホルダー (あとで実データ描画に置き換え)
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(width: waveformWidth/2,
-                                       height: barHeight)
-                                .background(
-                                    GeometryReader { proxy in
-                                        Color.clear
-                                            .preference(
-                                                key: ScrollOffsetKey.self,
-                                                // proxy.frame(in: .named("wave")) の origin.x を渡す
-                                                value: proxy.frame(in: .named("wave")).origin.x
-                                            )
-                                    }
-                                )
+                            ZStack {
+                                Rectangle()
+                                    .fill(Color.gray.opacity(0.2))
+                                    .frame(width: waveformWidth/2,
+                                           height: barHeight)
+                                    .background(
+                                        GeometryReader { proxy in
+                                            Color.clear
+                                                .preference(
+                                                    key: ScrollOffsetKey.self,
+                                                    // proxy.frame(in: .named("wave")) の origin.x を渡す
+                                                    value: proxy.frame(in: .named("wave")).origin.x
+                                                )
+                                        }
+                                    )
+                                // 右余白 = 画面幅/2
+                                WaveformView(fileURL: URL(fileURLWithPath: filePath))
+                            }
                             
-                            // 右余白 = 画面幅/2
                             Color.clear
                                 .frame(width: geo.size.width / 2)
+                            
                         }
                     }
                     .coordinateSpace(name: "wave")
@@ -78,10 +85,16 @@ struct WaveformScrollSliderView: View {
                     Rectangle()
                         .fill(Color.blue)
                         .frame(width: 2, height: barHeight)
+                    
                 }
             }
             .frame(height: barHeight)
             
+            
+            
+            
+            
+            .padding()
             HStack {
                 Button(action: { vm.play() }) {
                     Image(systemName: "play.fill")
@@ -92,18 +105,19 @@ struct WaveformScrollSliderView: View {
                     Image(systemName: "pause.fill")
                 }
             }
-                // mm:ss.SS 表示
+            // mm:ss.SS 表示
             Text(vm.displayTime)
                 .font(.caption)              // もしくは .font(.system(.caption, design: .monospaced))
                 .monospacedDigit()           // ← これで数字を等幅に
                 .padding()
             
-            .padding()
+                .padding()
         }
+        
     }
     
-    // PreferenceKey を同一ファイルに定義
-    struct ScrollOffsetKey: PreferenceKey {
+    
+    private struct ScrollOffsetKey: PreferenceKey {
         static var defaultValue: CGFloat = 0
         static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
             value = nextValue()

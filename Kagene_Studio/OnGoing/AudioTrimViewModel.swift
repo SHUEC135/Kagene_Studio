@@ -30,7 +30,7 @@ class AudioTrimViewModel: ObservableObject {
 
     func trimAudio() {
         guard let audioURL = originalAudioURL else {
-            statusMessage = "Audio file not found."
+            statusMessage = "オーディオファイルが見つかりません。"
             return
         }
 
@@ -38,7 +38,7 @@ class AudioTrimViewModel: ObservableObject {
               let endMs = Double(endTimeMs),
               startMs >= 0,
               endMs > startMs else {
-            statusMessage = "Invalid input times."
+            statusMessage = "無効な開始時間です。"
             return
         }
 

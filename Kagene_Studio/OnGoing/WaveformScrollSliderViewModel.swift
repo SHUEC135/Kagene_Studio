@@ -1,18 +1,18 @@
 import SwiftUI
+import Foundation
 import AVFoundation
 
-final class WaveformScrollSliderViewModel: ObservableObject {
+final class WaveformScrollSliderViewModel: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var selectedTimeMs: Int = 0
     @Published var displayTime: String = "0:00.00"
     
-    let duration: Double
-//    let secondsPerScreen: Double
+    var duration: Double = 0
     
     private var audioPlayer: AVAudioPlayer?
     private var timer: Timer?    // ← タイマー用プロパティ追加
 
-    init(filePath: String/*, secondsPerScreen: Double = 4.0*/) {
-//        self.secondsPerScreen = secondsPerScreen
+    init(filePath: String) {
+        super.init()
         //───(1) オーディオセッション設定───────────────────────────
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
@@ -34,6 +34,7 @@ final class WaveformScrollSliderViewModel: ObservableObject {
         //───(3) AVAudioPlayer の初期化──────────────────────────────
         do {
             let player = try AVAudioPlayer(contentsOf: url)
+            player.delegate = self
             player.prepareToPlay()
             self.audioPlayer = player
             self.duration = player.duration
@@ -43,6 +44,12 @@ final class WaveformScrollSliderViewModel: ObservableObject {
         }
 
         updateDisplayTime(ms: 0)
+    }
+    
+    // MARK: - AVAudioPlayerDelegate
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        print("🔴 didFinishPlaying – stopping timer")
+        stopTimer()
     }
 
     // MARK: 再生／一時停止
@@ -76,6 +83,17 @@ final class WaveformScrollSliderViewModel: ObservableObject {
         // 0.05秒ごとに再生位置を取得してUIを更新
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
             guard let self = self, let player = self.audioPlayer else { return }
+            
+            // ① 再生末尾到達チェック
+            if player.currentTime >= self.duration {
+                self.stopTimer()
+                // 必要なら最後のフレームを表示
+                self.selectedTimeMs = Int((self.duration * 1000).rounded())
+                self.updateDisplayTime(ms: self.selectedTimeMs)
+                return
+            }
+            
+            // ② 通常の進捗更新
             let ms = Int((player.currentTime * 1000).rounded())
             self.selectedTimeMs = ms
             self.updateDisplayTime(ms: ms)
@@ -85,6 +103,7 @@ final class WaveformScrollSliderViewModel: ObservableObject {
     }
     
     private func stopTimer() {
+        print("🛑 stopTimer() called – invalidating timer")
         timer?.invalidate()
         timer = nil
     }

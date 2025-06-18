@@ -50,12 +50,20 @@ struct AudioTrimFlowView: View {
                 case .end:
                     VStack {
                         Text("Enter End Time (ms)")
-                        TextField("End Time", text: $viewModel.endTimeMs)
-                            .keyboardType(.decimalPad)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        WaveformScrollSliderView(filePath: filePath, vm: waveformVM)
                         Button("Trim Audio") {
-                            viewModel.trimAudio()
-                            dismiss()
+                            let endMs = waveformVM.selectedTimeMs
+                            if endMs >= 0,
+                               let startMsInt = Int(viewModel.startTimeMs),
+                               endMs > startMsInt {
+                                viewModel.endTimeMs = String(endMs)
+                                print("✂️Trimming ends from \(String(viewModel.endTimeMs))ms")
+                                viewModel.trimAudio()
+                                dismiss()
+                            }
+                            else {
+                                viewModel.statusMessage = "開始時間より大きい値を指定してください"
+                            }
                         }
                     }
                 }
@@ -101,7 +109,8 @@ struct AudioTrimFlowView: View {
             if startMs >= 0 {
                 viewModel.startTimeMs = String(startMs)
                 currentStep = .end
-                print(String(viewModel.startTimeMs))
+                print("✂️Trimming starts from \(String(viewModel.startTimeMs))ms")
+                
             } else {
                 viewModel.statusMessage = "無効な開始時間です"
             }
