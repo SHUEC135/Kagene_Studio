@@ -10,6 +10,9 @@ import SwiftUI
 struct ProjectListView: View {
     @EnvironmentObject var viewModel: ProjectListViewModel
     
+    @State private var showingDeleteAlert = false
+    @State private var deleteFilePath: String = ""
+    
     var body: some View {
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         NavigationView {
@@ -23,12 +26,14 @@ struct ProjectListView: View {
                             HStack {
                                 Text(project.name)
                                     .font(.headline)
+                                    .foregroundColor(.primary)
                                 Spacer()
                                 AudioTrimButton(filePath: documentsURL
                                     .appendingPathComponent(project.name)
                                     .appendingPathComponent("\(project.name).mp3")
                                     .path)
                             }
+
                         ) {
                             ForEach(project.files) { file in
                                 HStack {
@@ -39,11 +44,37 @@ struct ProjectListView: View {
                                             .appendingPathComponent(file.name)
                                             .path)
                                     ) {
-                                        Text(file.name)
+                                        Text((file.name as NSString).deletingPathExtension)
                                             .lineLimit(1)
                                     }
                                     Spacer()
                                 }
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive) {
+                                        deleteFilePath = documentsURL
+                                            .appendingPathComponent(project.name)
+                                            .appendingPathComponent("Edited")
+                                            .appendingPathComponent(file.name)
+                                            .path
+                                        showingDeleteAlert = true
+                                    } label: {
+                                        Label("削除", systemImage: "trash")
+                                    }
+                                }
+                                .alert("本当に削除しますか？", isPresented: $showingDeleteAlert) {
+                                    Button("削除", role: .destructive) {
+                                        do {
+                                            try FileManager.default.removeItem(atPath: deleteFilePath)
+                                            viewModel.loadProjects()
+                                        } catch {
+                                            print("❌ 削除エラー: \(error)")
+                                        }
+                                    }
+                                    Button("キャンセル", role: .cancel) { }
+                                } message: {
+                                    Text("一度削除すると元に戻せません")
+                                }
+                                
                                 .onAppear {
                                     let fullPath = documentsURL
                                         .appendingPathComponent(project.name)
@@ -56,6 +87,7 @@ struct ProjectListView: View {
                         }
                     }
                 }
+
                 .navigationTitle("プロジェクト")
                 .onAppear {
                     viewModel.loadProjects()

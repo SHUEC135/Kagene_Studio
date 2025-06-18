@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		4C71C8562DEFF6EE00343873 /* Kagene_Studio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kagene_Studio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C71C8562DEFF6EE00343873 /* Voisync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Voisync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		4C71C8982DF1811600343873 /* Kagene_Studio */ = {
+		4C71C8982DF1811600343873 /* Voisync */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Kagene_Studio;
+			path = Voisync;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		4C71C84D2DEFF6EE00343873 = {
 			isa = PBXGroup;
 			children = (
-				4C71C8982DF1811600343873 /* Kagene_Studio */,
+				4C71C8982DF1811600343873 /* Voisync */,
 				4C71C8572DEFF6EE00343873 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		4C71C8572DEFF6EE00343873 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4C71C8562DEFF6EE00343873 /* Kagene_Studio.app */,
+				4C71C8562DEFF6EE00343873 /* Voisync.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4C71C8552DEFF6EE00343873 /* Kagene_Studio */ = {
+		4C71C8552DEFF6EE00343873 /* Voisync */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4C71C8612DEFF6F000343873 /* Build configuration list for PBXNativeTarget "Kagene_Studio" */;
+			buildConfigurationList = 4C71C8612DEFF6F000343873 /* Build configuration list for PBXNativeTarget "Voisync" */;
 			buildPhases = (
 				4C71C8522DEFF6EE00343873 /* Sources */,
 				4C71C8532DEFF6EE00343873 /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				4C71C8982DF1811600343873 /* Kagene_Studio */,
+				4C71C8982DF1811600343873 /* Voisync */,
 			);
-			name = Kagene_Studio;
+			name = Voisync;
 			packageProductDependencies = (
 			);
 			productName = Kagene_Studio;
-			productReference = 4C71C8562DEFF6EE00343873 /* Kagene_Studio.app */;
+			productReference = 4C71C8562DEFF6EE00343873 /* Voisync.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4C71C8552DEFF6EE00343873 /* Kagene_Studio */,
+				4C71C8552DEFF6EE00343873 /* Voisync */,
 			);
 		};
 /* End PBXProject section */
@@ -253,7 +253,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ALM4CFX23L;
+				DEVELOPMENT_TEAM = XX3A8CX547;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app records voice using the microphone.";
@@ -267,7 +267,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.Honda.Chanshi-.Kagene-Studio";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Honda.Chanshi.Kagene;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -282,7 +282,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ALM4CFX23L;
+				DEVELOPMENT_TEAM = XX3A8CX547;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app records voice using the microphone.";
@@ -296,7 +296,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.Honda.Chanshi-.Kagene-Studio";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Honda.Chanshi.Kagene;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -316,7 +316,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4C71C8612DEFF6F000343873 /* Build configuration list for PBXNativeTarget "Kagene_Studio" */ = {
+		4C71C8612DEFF6F000343873 /* Build configuration list for PBXNativeTarget "Voisync" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4C71C8622DEFF6F000343873 /* Debug */,

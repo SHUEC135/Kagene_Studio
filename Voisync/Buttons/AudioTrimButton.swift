@@ -26,6 +26,5 @@ struct AudioTrimButton: View {
         .sheet(isPresented: $showModal) {
             AudioTrimFlowView(filePath: filePath)
         }
-        .padding()
     }
 }
